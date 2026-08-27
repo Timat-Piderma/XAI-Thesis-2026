@@ -82,3 +82,38 @@ plt.tight_layout()
 plt.savefig('shap_global_summary.png', dpi=300)
 print("Plot saved as 'shap_global_summary.png'.")
 plt.show()
+
+import numpy as np
+
+print("\nFinding the customer with the highest probability of default...")
+
+# Predict probabilities for the entire test set
+probabilities = rf_model.predict_proba(X_test)
+
+# Extract probabilities for Class 1 (Default)
+default_probs = probabilities[:, 1]
+
+# Find the index of the instance with the highest default probability
+worst_customer_idx = np.argmax(default_probs)
+max_prob = default_probs[worst_customer_idx]
+
+# Get the specific row
+instance = X_test.iloc[[worst_customer_idx]]
+
+print("Generating Local Explanation object...")
+
+local_explanation = explainer(instance)
+local_exp_class1 = local_explanation[0, :, 1]
+
+# Generate the Waterfall Plot
+print("Rendering Waterfall plot...")
+plt.figure(figsize=(10, 6))
+shap.plots.waterfall(local_exp_class1, show=False)
+
+# Save and display
+plt.tight_layout()
+plt.savefig('shap_local_waterfall.png', dpi=300, bbox_inches='tight')
+print("Plot saved as 'shap_local_waterfall.png'.")
+plt.show()
+
+shap.plots.force(explainer.expected_value, shap_values[0, :, 1])
