@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report, accuracy_score
 
 # Loading Dataset
 print("Loading dataset...")
-df = pd.read_csv('data/Loan_default.csv')
+df = pd.read_csv('Loan_default.csv')
 
 # Defining target column
 TARGET_COL = 'Default'
