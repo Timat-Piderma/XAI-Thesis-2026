@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report, accuracy_score
 
 # Loading Dataset
 print("Loading dataset...")
-df = pd.read_csv('Loan_default.csv')
+df = pd.read_csv('data/Loan_default.csv')
 
 # Defining target column
 TARGET_COL = 'Default'
@@ -115,5 +115,3 @@ plt.tight_layout()
 plt.savefig('shap_local_waterfall.png', dpi=300, bbox_inches='tight')
 print("Plot saved as 'shap_local_waterfall.png'.")
 plt.show()
-
-shap.plots.force(explainer.expected_value, shap_values[0, :, 1])
