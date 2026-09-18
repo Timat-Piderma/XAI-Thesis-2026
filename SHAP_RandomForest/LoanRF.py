@@ -80,10 +80,11 @@ shap.summary_plot(
     show=False # Set to False so we can customize or save the plot before showing it
 )
 
-# Save the plot 
+# Save and display
+output_path = script_folder / 'shap_rf_global_waterfall.png'
 plt.tight_layout()
-plt.savefig('shap_global_summary.png', dpi=300)
-print("Plot saved as 'shap_global_summary.png'.")
+plt.savefig(output_path, dpi=300, bbox_inches='tight')
+print(f"Plot saved as '{output_path}'")
 plt.show()
 
 print("\nFinding the customer with the highest probability of default...")
@@ -112,7 +113,8 @@ plt.figure(figsize=(10, 6))
 shap.plots.waterfall(local_exp_class1, show=False)
 
 # Save and display
+output_path = script_folder / 'shap_rf_local_waterfall.png'
 plt.tight_layout()
-plt.savefig('shap_local_waterfall.png', dpi=300, bbox_inches='tight')
-print("Plot saved as 'shap_local_waterfall.png'.")
+plt.savefig(output_path, dpi=300, bbox_inches='tight')
+print(f"Plot saved as '{output_path}'")
 plt.show()

@@ -102,5 +102,7 @@ exp = explainer.explain_instance(
     top_labels=1
 )
 
-exp.save_to_file(file_path='lime_single_explanation.html', show_table=True, show_all=False)
-print("Explanation saved to 'lime_single_explanation.html'")
+# Save plot
+output_path = script_folder / 'lime_rf_single_explanation.html'
+exp.save_to_file(file_path=output_path, show_table=True, show_all=False)
+print(f"Plot saved as '{output_path}'")
