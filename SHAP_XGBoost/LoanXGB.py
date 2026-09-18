@@ -2,6 +2,7 @@
 # https://github.com/shap/shap/blob/master/notebooks/tabular_examples/tree_based_models/Census%20income%20classification%20with%20XGBoost.ipynb
 
 import pandas as pd
+from pathlib import Path
 import matplotlib.pylab as pl
 import numpy as np
 import xgboost
@@ -9,9 +10,11 @@ from sklearn.model_selection import train_test_split
 
 import shap
 
-# Load Dataset
+# Loading Dataset
+script_folder = Path(__file__).parent
+dataset_path = script_folder.parent / 'data' / 'Loan_default.csv'
 print("Loading dataset...")
-df = pd.read_csv('Loan_default.csv')
+df = pd.read_csv(dataset_path)
 
 # Defining target column
 TARGET_COL = 'Default'

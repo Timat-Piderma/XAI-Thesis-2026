@@ -1,4 +1,5 @@
 from __future__ import print_function
+from pathlib import Path
 import pandas as pd
 import sklearn
 import sklearn.ensemble
@@ -12,8 +13,10 @@ from tqdm import tqdm
 np.random.seed(42)
 
 # Loading Dataset
+script_folder = Path(__file__).parent
+dataset_path = script_folder.parent / 'data' / 'Loan_default.csv'
 print("Loading dataset...")
-df = pd.read_csv('Loan_default.csv')
+df = pd.read_csv(dataset_path)
 
 # Defining target column
 TARGET_COL = 'Default'
