@@ -1,0 +1,5 @@
+Age,Income,LoanAmount,CreditScore,MonthsEmployed,NumCreditLines,InterestRate,LoanTerm,DTIRatio,Education,EmploymentType,MaritalStatus,HasMortgage,HasDependents,LoanPurpose,HasCoSigner,Default
+18,19742,181876,439,7,2,21.760000228881836,60,0.10000000149011612,Master's,Full-time,Single,No,No,Auto,Yes,1
+18,19742,181876,439,7,2,12.61,60,0.1,Master's,Full-time,Single,No,No,Auto,No,0
+18,19742,181876,439,7,2,3.11,60,0.1,Master's,Full-time,Single,No,No,Auto,No,0
+18,19742,181876,439,113,2,21.76,60,0.1,Master's,Full-time,Single,No,No,Auto,Yes,0
