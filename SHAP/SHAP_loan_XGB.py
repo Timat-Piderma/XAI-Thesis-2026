@@ -55,26 +55,23 @@ model = xgboost.train(
 )
 
 # Classic feature attributions
-output_path = script_folder / 'xgb_plot_importance.png'
+output_path = script_folder / 'xgb_output/xgb_plot_importance.png'
 xgboost.plot_importance(model)
 pl.title("xgboost.plot_importance(model)")
 pl.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Plot saved as '{output_path}'")
-pl.show()
 
-output_path = script_folder / 'xgb_plot_importance_cover.png'
+output_path = script_folder / 'xgb_output/xgb_plot_importance_cover.png'
 xgboost.plot_importance(model, importance_type="cover")
 pl.title('xgboost.plot_importance(model, importance_type="cover")')
 pl.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Plot saved as '{output_path}'")
-pl.show()
 
-output_path = script_folder / 'xgb_plot_importance_gain.png'
+output_path = script_folder / 'xgb_output/xgb_plot_importance_gain.png'
 xgboost.plot_importance(model, importance_type="gain")
 pl.title('xgboost.plot_importance(model, importance_type="gain")')
 pl.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Plot saved as '{output_path}'")
-pl.show()
 
 # Explain predictions
 # Using Tree SHAP to explain the entire dataset
@@ -83,28 +80,25 @@ explainer = shap.TreeExplainer(model)
 shap_values = explainer.shap_values(X)
 
 # Visualize a single prediction
-output_path = script_folder / 'shap_xgb_force_plot_single.png'
+output_path = script_folder / 'xgb_output/shap_xgb_force_plot_single.png'
 shap.force_plot(explainer.expected_value, shap_values[0, :], X.iloc[0, :], matplotlib=True, show=False)
 pl.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Plot saved as '{output_path}'")
-pl.show()
 
 # Visualize many (1000) predictions
-output_path_html = script_folder / 'shap_xgb_force_plot_interactive.html'
+output_path = script_folder / 'xgb_output/shap_xgb_force_plot_interactive.html'
 interactive_plot = shap.force_plot(explainer.expected_value, shap_values[:1000, :], X.iloc[:1000, :])
-shap.save_html(str(output_path_html), interactive_plot)
-print(f"Plot saved as '{output_path_html}'")
+shap.save_html(str(output_path), interactive_plot)
+print(f"Plot saved as '{output_path}'")
 
 # Bar chart of mean importance
-output_path = script_folder / 'shap_xgb_summary_bar.png'
+output_path = script_folder / 'xgb_output/shap_xgb_summary_bar.png'
 shap.summary_plot(shap_values, X, plot_type="bar", show=False)
 pl.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Plot saved as '{output_path}'")
-pl.show()
 
 # SHAP Summary Plot
-output_path = script_folder / 'shap_xgb_summary_dots.png'
+output_path = script_folder / 'xgb_output/shap_xgb_summary_dots.png'
 shap.summary_plot(shap_values, X, show=False)
 pl.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Plot saved as '{output_path}'")
-pl.show()

@@ -1,7 +1,0 @@
-Loading dataset...
-Applying Label Encoding for LIME...
-Train Size: (204277, 16)
-Test Size: (51070, 16)
-Training Random Forest...: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 100/100 [00:35<00:00,  2.83it/s]
-Model Accuracy: 0.8856471509692578
-Explanation saved to 'lime_single_explanation.html'

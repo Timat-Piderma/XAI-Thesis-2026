@@ -81,11 +81,10 @@ shap.summary_plot(
 )
 
 # Save and display
-output_path = script_folder / 'shap_rf_global_waterfall.png'
+output_path = script_folder / 'rf_output/shap_rf_global_waterfall.png'
 plt.tight_layout()
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Plot saved as '{output_path}'")
-plt.show()
 
 print("\nFinding the customer with the highest probability of default...")
 
@@ -113,8 +112,7 @@ plt.figure(figsize=(10, 6))
 shap.plots.waterfall(local_exp_class1, show=False)
 
 # Save and display
-output_path = script_folder / 'shap_rf_local_waterfall.png'
+output_path = script_folder / 'rf_output/shap_rf_local_waterfall.png'
 plt.tight_layout()
 plt.savefig(output_path, dpi=300, bbox_inches='tight')
 print(f"Plot saved as '{output_path}'")
-plt.show()
