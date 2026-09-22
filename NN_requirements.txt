@@ -1,0 +1,6 @@
+keras==3.12.4
+matplotlib==3.11.2
+numpy==2.5.3
+packaging==26.3
+tensorflow==2.21.0
+tf_keras_vis==0.8.7
