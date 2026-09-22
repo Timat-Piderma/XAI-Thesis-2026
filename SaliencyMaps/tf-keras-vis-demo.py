@@ -31,9 +31,9 @@ model.summary()
 image_titles = ['Goldfish', 'Bear', 'Assault rifle']
 
 # Load images and Convert them to a Numpy array
-img1 = keras.preprocessing.image.load_img(script_folder / 'images/goldfish.jpg', target_size=(224, 224))
-img2 = keras.preprocessing.image.load_img(script_folder / 'images/bear.jpg', target_size=(224, 224))
-img3 = keras.preprocessing.image.load_img(script_folder / 'images/soldiers.jpg', target_size=(224, 224))
+img1 = keras.preprocessing.image.load_img(script_folder.parent / 'data/demo_images/goldfish.jpg', target_size=(224, 224))
+img2 = keras.preprocessing.image.load_img(script_folder.parent / 'data/demo_images/bear.jpg', target_size=(224, 224))
+img3 = keras.preprocessing.image.load_img(script_folder.parent / 'data/demo_images/soldiers.jpg', target_size=(224, 224))
 images = np.asarray([np.array(img1), np.array(img2), np.array(img3)])
 
 # Preparing input data for VGG16
@@ -113,7 +113,7 @@ for i, title in enumerate(image_titles):
     ax[i].imshow(saliency_map[i], cmap='jet')
     ax[i].axis('off')
 plt.tight_layout()
-plt.savefig(script_folder / 'images/smoothgrad.png')
+plt.savefig(script_folder / 'images/demo_smoothgrad.png')
 plt.show()
 
 
@@ -164,7 +164,7 @@ for i, title in enumerate(image_titles):
     ax[i].imshow(heatmap, cmap='jet', alpha=0.5)
     ax[i].axis('off')
 plt.tight_layout()
-plt.savefig(script_folder / 'images/gradcam_plus_plus.png')
+plt.savefig(script_folder / 'images/demo_gradcam_plus_plus.png')
 plt.show()
 
 
