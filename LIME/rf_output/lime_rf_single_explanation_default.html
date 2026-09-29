@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div41E3QPH5OO36YQC"></div>
+        <div class="lime top_div" id="top_divAMHHJFLMO1ZETMJ"></div>
         
         <script>
-        var top_div = d3.select('#top_div41E3QPH5OO36YQC').classed('lime top_div', true);
+        var top_div = d3.select('#top_divAMHHJFLMO1ZETMJ').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["No Default", "Default"], [0.9166001677513123, 0.08339980989694595]);
+            var pp = new lime.PredictProba(pp_svg, ["No Default", "Default"], [0.45, 0.55]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["No Default", "Default"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["InterestRate <= 7.76", 0.07201922367663265], ["MonthsEmployed <= 30.00", -0.054820826809052564], ["LoanAmount <= 65983.00", 0.047323221818968135], ["82519.00 < Income <= 116223.00", 0.030803124586108337], ["CreditScore <= 437.00", -0.027772606235306654], ["NumCreditLines <= 2.00", 0.027072388625919597], ["EmploymentType=Unemployed", -0.025106713622303902], ["HasCoSigner=No", -0.02191012634744577], ["HasDependents=No", -0.02109775099477452], ["Education=PhD", 0.016248723613254537]], 0, exp_div);
+                exp.show([["InterestRate > 19.24", 0.07819846787978499], ["Income <= 48842.00", 0.07024936405279603], ["MonthsEmployed <= 30.00", 0.05660961568842527], ["LoanAmount > 189046.00", 0.04841670576376893], ["HasCoSigner=No", 0.01953604060306499], ["HasDependents=No", 0.014254246551506124], ["NumCreditLines <= 2.00", -0.013838561502788949], ["31.00 < Age <= 44.00", 0.012653157772738987], ["Education=High School", 0.0091180618517787], ["0.30 < DTIRatio <= 0.50", -0.007984100447300286]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_tabular([["InterestRate", "3.47", 0.07201922367663265], ["MonthsEmployed", "10.00", -0.054820826809052564], ["LoanAmount", "64805.00", 0.047323221818968135], ["Income", "84935.00", 0.030803124586108337], ["CreditScore", "417.00", -0.027772606235306654], ["NumCreditLines", "1.00", 0.027072388625919597], ["EmploymentType=Unemployed", "True", -0.025106713622303902], ["HasCoSigner=No", "True", -0.02191012634744577], ["HasDependents=No", "True", -0.02109775099477452], ["Education=PhD", "True", 0.016248723613254537]], 0, raw_div);
+            exp.show_raw_tabular([["InterestRate", "22.89", 0.07819846787978499], ["Income", "21987.00", 0.07024936405279603], ["MonthsEmployed", "6.00", 0.05660961568842527], ["LoanAmount", "220709.00", 0.04841670576376893], ["HasCoSigner=No", "True", 0.01953604060306499], ["HasDependents=No", "True", 0.014254246551506124], ["NumCreditLines", "2.00", -0.013838561502788949], ["Age", "42.00", 0.012653157772738987], ["Education=High School", "True", 0.0091180618517787], ["DTIRatio", "0.35", -0.007984100447300286]], 1, raw_div);
         
         </script>
         </body></html>

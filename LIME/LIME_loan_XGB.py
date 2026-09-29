@@ -109,16 +109,33 @@ explainer = lime.lime_tabular.LimeTabularExplainer(
     mode='classification'
 )
 
-# Explaining an instance
-i = np.random.randint(0, X_test_np.shape[0])
+# Explaining a non Default instances
+prd = gbtree.predict(X_test_np)
+prd_def = np.where(prd == 0)[0]
+i = prd_def[0]
 
 exp = explainer.explain_instance(
-    X_test_np[i], 
+    X_test_np[i],
     gbtree.predict_proba,  
     top_labels=1
 )
 
 # Save plot
-output_path = script_folder / 'xgb_output/lime_xgb_single_explanation.html'
+output_path = script_folder / 'xgb_output/lime_xgb_single_explanation_nondefault.html'
+exp.save_to_file(file_path=output_path, show_table=True, show_all=False)
+print(f"Plot saved as '{output_path}'")
+
+# Explaining a default instances
+prd_ndef = np.where(prd == 1)[0]
+i = prd_ndef[0]
+
+exp = explainer.explain_instance(
+    X_test_np[i],
+    gbtree.predict_proba,  
+    top_labels=1
+)
+
+# Save plot
+output_path = script_folder / 'xgb_output/lime_xgb_single_explanation_default.html'
 exp.save_to_file(file_path=output_path, show_table=True, show_all=False)
 print(f"Plot saved as '{output_path}'")
