@@ -35,7 +35,7 @@ _Necessary to be in the root folder because the scripts have **relative paths** 
 
 ### Currently Available Scripts Folders
 - SaliencyMaps
-
+- FeatureVisualization
 
 ## Dataset
 ### Currently used dataset:
