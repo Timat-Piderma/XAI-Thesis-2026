@@ -70,7 +70,7 @@ for i in tqdm(range(step, tot + 1, step), desc="Training Random Forest..."):
     rf.fit(X_train, y_train)
 
 def predict_function(model, data):
-    return rf.predict_proba(data)[:, 1]
+    return model.predict_proba(data)[:, 1]
 
 print(f"Model Accuracy: {sklearn.metrics.accuracy_score(y_test, rf.predict(X_test))}")
 
