@@ -73,7 +73,7 @@ def predict_function(model, data):
 print(f"Model Accuracy: {sklearn.metrics.accuracy_score(y_test, rf.predict(X_test))}")
 
 # Create the Explainer
-exp = dx.Explainer(rf, data=X, y=y,  predict_function=predict_function, label='Random Forest')
+exp = dx.Explainer(rf, data=X_test, y=y_test,  predict_function=predict_function)
 
 pdp = exp.model_profile(
     variables=['Age','Income','LoanAmount','CreditScore'],

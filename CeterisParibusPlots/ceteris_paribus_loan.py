@@ -72,14 +72,13 @@ def predict_function(model, data):
 print(f"Model Accuracy: {sklearn.metrics.accuracy_score(y_test, rf.predict(X_test))}")
 
 # Create the Explainer
-exp = dx.Explainer(rf, data=X, y=y,  predict_function=predict_function)
+exp = dx.Explainer(rf, data=X_test, y=y_test,  predict_function=predict_function)
 
 # Get one observation from test values
 obs = X_test.sample(n=1, random_state=4)
 
 cp = exp.predict_profile(
     new_observation=obs, 
-    grid_points=40, 
     variables=['Income']
 )
 

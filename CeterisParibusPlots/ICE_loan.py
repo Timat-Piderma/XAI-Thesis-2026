@@ -75,7 +75,7 @@ def predict_function(model, data):
 print(f"Model Accuracy: {sklearn.metrics.accuracy_score(y_test, rf.predict(X_test))}")
 
 # Create the Explainer
-exp = dx.Explainer(rf, data=X, y=y,  predict_function=predict_function)
+exp = dx.Explainer(rf, data=X_test, y=y_test,  predict_function=predict_function)
 
 X_test_sampled = X_test.sample(n=100, random_state=42)
 cp = exp.predict_profile(
