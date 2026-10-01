@@ -133,8 +133,8 @@ save_cf(dice_exp_kd, script_folder / 'DiCE_genetic_counterfactuals.csv')
 # Assigning new weights
 # Now generating explanations using the new feature weights, a higher feature weight means that the feature is harder to change than others
 #feature_weights = {'Age': 10, 'Income': 5}
-#dice_exp = dice_exp_random.generate_counterfactuals(
-#    i, total_CFs=k, desired_class=0, feature_weights=feature_weights), verbose=False
+#dice_weighted_exp = dice_exp_random.generate_counterfactuals(
+#    i, total_CFs=k, desired_class=0, feature_weights=feature_weights, verbose=False)
 
 # Fixing features
 # DiCE allows imputting a list of features to vary, leaving unchanged the others
