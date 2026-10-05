@@ -34,11 +34,8 @@ print("Applying Label Encoding...")
 X = df.drop(columns=COLS_TO_DROP)
 y = df[TARGET_COL]
 
-# 1. TRASFORMAZIONE DEI DATI (Questo mancava)
-# Identifica solo le colonne con del testo
 categorical_cols = X.select_dtypes(include=['object', 'category']).columns
 
-# Inizializza l'encoder e trasforma le stringhe in numeri sul dataframe X
 encoder = sklearn.preprocessing.OrdinalEncoder()
 X[categorical_cols] = encoder.fit_transform(X[categorical_cols])
 
