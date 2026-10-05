@@ -14,6 +14,7 @@ pip install -r .\no_NN_requirements.txt
 - LIME
 - SHAP
 - ALE
+- Anchors
 
 ### Installing Dependencies for Neural Network Scripts (Python 3.10.21)
 ```
