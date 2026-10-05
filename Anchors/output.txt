@@ -1,0 +1,4 @@
+Prediction:  No Default
+Anchor: LoanAmount <= 65983.00
+Precision: 0.97
+Coverage: 0.25
