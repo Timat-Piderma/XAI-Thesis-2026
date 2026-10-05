@@ -1,30 +1,27 @@
 # XAI-Thesis-2026
-Codes and Datasets of my Master Thesis on Explainable Artificial Intelligence (XAI)
+Codes and Datasets of my Master Thesis on Explainable Artificial Intelligence (XAI), based on the book "*Interpretable Machine Learning*" by Christoph Molnar.
 
 ## How to Use
 This project utilizes Python 3.10.21 for the neural network components, while the remaining scripts are implemented in Python 3.14.7.
 
 ### Installing Dependencies for <ins>Non-Neural Network</ins> Scripts (Python 3.14.7)
 ```
-pip install -r no_NN_requirements.txt
+pip install -r .\no_NN_requirements.txt
 ```
-### Execute a Script
-Inside root folder
-```
-py .\[folder]\[python script]
-```
-_Necessary to be in the root folder because the scripts have **relative paths** to save their output in the correct folder_
-
 ### Currently Available Scripts Folders
 - CeterisParibusPlots
 - CounterfactualExplanations
 - LIME
 - SHAP
+- ALE
 
 ### Installing Dependencies for Neural Network Scripts (Python 3.10.21)
 ```
-pip install -r NN_requirements.txt
+pip install -r .\NN_requirements.txt
 ```
+### Currently Available Scripts Folders
+- SaliencyMaps
+- FeatureVisualization
 
 ### Execute a Script
 Inside root folder
@@ -32,10 +29,6 @@ Inside root folder
 python .\[folder]\[python script]
 ```
 _Necessary to be in the root folder because the scripts have **relative paths** to save their output in the correct folder_
-
-### Currently Available Scripts Folders
-- SaliencyMaps
-- FeatureVisualization
 
 ## Dataset
 ### Currently used dataset:
