@@ -114,3 +114,19 @@ plt=pdp.plot(geom='profiles', show=False)
 output_path = script_folder / 'dalex_ice_pdp_4.html'
 plt.write_html(str(output_path))
 print(f"Plot saved as '{output_path}'")
+
+pdp = exp.model_profile(
+    variables=['Income'],
+    N=100)
+
+plt=pdp.plot(geom='profiles', show=False, title='PDP Profile for Income')
+
+plt.update_layout(
+    yaxis_title="Predicted Probability of Default",
+    xaxis_title="Income (USD)",
+    yaxis_range=[0, 1]
+)
+
+output_path = script_folder / 'dalex_ice_pdp_income.html'
+plt.write_html(str(output_path))
+print(f"Plot saved as '{output_path}'")
