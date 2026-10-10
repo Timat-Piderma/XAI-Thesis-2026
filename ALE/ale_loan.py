@@ -1,88 +1,34 @@
 import effector
 from pathlib import Path
-import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import pandas as pd
-import sklearn
-import sklearn.ensemble
-import sklearn.preprocessing
-import sklearn.metrics
 import numpy as np
-import dalex as dx
-from tqdm import tqdm
+import joblib
 
 np.random.seed(42)
 
-# Loading Dataset
+# Loading Model-Dataset Bundle
 script_folder = Path(__file__).parent
-dataset_path = script_folder.parent / 'data' / 'Loan_default.csv'
-print("Loading dataset...")
-df = pd.read_csv(dataset_path)
+bundle_path = script_folder.parent / 'models' / 'loan_rf.joblib'
 
-# Defining target column
-TARGET_COL = 'Default'
+print(f"Loading bundle from {bundle_path}...")
+bundle = joblib.load(bundle_path)
 
-# Pre-Processing
-# Removing rows with missing values
-df = df.dropna()
+rf = bundle['model']
+X_test = bundle['X_test']
+y_test = bundle['y_test']
+feature_names = bundle['feature_names']
+categorical_names = bundle['categorical_names']
+categorical_cols = bundle['categorical_cols']
 
-# We must remove 'LoanID' (or any unique identifier) to avoid MemoryError.
-COLS_TO_DROP = [TARGET_COL, 'LoanID']
-
-print("Applying Label Encoding...")
-X = df.drop(columns=COLS_TO_DROP)
-y = df[TARGET_COL]
-
-categorical_cols = X.select_dtypes(include=['object', 'category']).columns
-
-encoder = sklearn.preprocessing.OrdinalEncoder()
-X[categorical_cols] = encoder.fit_transform(X[categorical_cols])
-
-# Train Test split (Ora X contiene solo numeri)
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(
-    X, y, 
-    test_size=0.2, 
-    random_state=42,
-    stratify=y       
-)
-
-print(f"Train Size: {X_train.shape}")
-print(f"Test Size: {X_test.shape}")
-
-# Train Baseline
-rf = sklearn.ensemble.RandomForestClassifier(
-    n_estimators=0,
-    warm_start=True,
-    random_state=42
-)
-
-step = 1
-tot = 100
-
-# Convert dataframes in NumPy array to avoid LIME warnings
-X_train_np = X_train.values
-X_test_np = X_test.values
-y_train_np = y_train.values
-y_test_np = y_test.values
-
-for i in tqdm(range(step, tot + 1, step), desc="Training Random Forest..."):
-    rf.n_estimators = i
-    rf.fit(X_train_np, y_train_np)
-
-print(f"Model Accuracy: {sklearn.metrics.accuracy_score(y_test_np, rf.predict(X_test_np))}")
-
-predict = effector.adapters.classifier_proba(rf)  # a plain numpy -> numpy callable
-
-category_names = [None] * len(X_train.columns)
+category_names = [None] * len(feature_names)
 
 for i, col_name in enumerate(categorical_cols):
-    c = X_train.columns.get_loc(col_name)
-    # Convertiamo i numpy array in liste standard per Effector
-    category_names[c] = list(encoder.categories_[i])
+    c = X_test.columns.get_loc(col_name)
+    category_names[c] = categorical_names[i]
 
 schema = effector.Schema(
-    feature_names=X_train.columns,
+    feature_names=feature_names,
     feature_types=[
         "ordinal", "ordinal", "ordinal", "ordinal", "ordinal", "ordinal",
         "ordinal", "ordinal", "ordinal", "nominal", "nominal", "nominal",
@@ -92,26 +38,39 @@ schema = effector.Schema(
     target_name="Default",
 )
 
+# Convert dataframes in NumPy array to avoid compatability issues
+X_test_np = X_test.values
+y_test_np = y_test.values
+
+predict = effector.adapters.classifier_proba(rf)
+
+def predict_fn(x):
+    df_x = pd.DataFrame(x, columns=feature_names)
+    return predict(df_x)
+
+print("Generating Effector report...")
 report = effector.explain(
-    X_train_np, 
-    predict, 
-    y_train_np, 
+    X_test_np, 
+    predict_fn, 
+    y_test_np, 
     schema=schema, 
     nof_instances=100, 
     random_state=42
 )
 
-report.to_html(script_folder / "report.html")
+with open(script_folder / "report.html", "w", encoding="utf-8") as f:
+    f.write(report.to_html())
 
+print("Generating ALE plots...")
 ale = effector.ALE(
-    X_train_np, 
-    predict, 
+    X_test_np, 
+    predict_fn, 
     schema=schema, 
     nof_instances=100, 
     random_state=42
 )
 
-for i, col in enumerate(X_train.columns):
-    ale.plot(i)
+for i, col in enumerate(feature_names):
+    ale.plot(i, show_plot=False)
     plt.savefig(script_folder / f"ale_plot_{col}.png", bbox_inches='tight', dpi=300)
-    plt.close()
+    print("Plot saved as " / script_folder / f"ale_plot_{col}.png")

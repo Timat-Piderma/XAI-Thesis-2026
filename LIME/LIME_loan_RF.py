@@ -1,91 +1,55 @@
 from __future__ import print_function
 from pathlib import Path
 import pandas as pd
-import sklearn
-import sklearn.ensemble
-import sklearn.preprocessing
-import sklearn.metrics
 import numpy as np
 import lime
 import lime.lime_tabular
-from tqdm import tqdm
+import joblib
+
+### AGGIUNTO: Ignora i warning di scikit-learn sui nomi delle feature mancanti in LIME ###
+import warnings
+warnings.filterwarnings("ignore", message="X does not have valid feature names")
+##########################################################################################
 
 np.random.seed(42)
 
-# Loading Dataset
+# Loading Model-Dataset Bundle
 script_folder = Path(__file__).parent
-dataset_path = script_folder.parent / 'data' / 'Loan_default.csv'
-print("Loading dataset...")
-df = pd.read_csv(dataset_path)
+bundle_path = script_folder.parent / 'models' / 'loan_rf.joblib'
 
-# Defining target column
-TARGET_COL = 'Default'
+print(f"Loading bundle from {bundle_path}...")
+bundle = joblib.load(bundle_path)
 
-# Pre-Processing
-# Removing rows with missing values
-df = df.dropna()
-
-# Dropping 'LoanID' as it's an irrelevant identifier
-df = df.drop(columns=['LoanID'])
-
-# Splitting features and target
-X = df.drop(columns=[TARGET_COL])
-y = df[TARGET_COL]
-
-categorical_columns = [
-    'Education', 'EmploymentType', 'MaritalStatus', 'LoanPurpose', 
-    'HasMortgage', 'HasDependents', 'HasCoSigner'
-]
+rf = bundle['model']
+X_test = bundle['X_test']
+y_test = bundle['y_test']
+feature_names = bundle['feature_names'].tolist()
+categorical_names_bundle = bundle['categorical_names']
+categorical_cols = bundle['categorical_cols']
 
 print("Applying Label Encoding for LIME...")
-categorical_names = {}
+
+# Create features dictionary
 categorical_features = []
+categorical_names = {}
 
-# Label Encoding for categorical features
-for i, col in enumerate(X.columns):
-    if col in categorical_columns or X[col].dtype == object or X[col].dtype == bool:
-        categorical_features.append(i)
-        le = sklearn.preprocessing.LabelEncoder()
-        X[col] = le.fit_transform(X[col].astype(str)) 
-        categorical_names[i] = le.classes_.tolist()
+for i, col_name in enumerate(categorical_cols):
+    col_idx = X_test.columns.get_loc(col_name)
+    categorical_features.append(col_idx)
+    categorical_names[col_idx] = categorical_names_bundle[i]
 
-# Train Test split
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(
-    X, y, 
-    test_size=0.2, 
-    random_state=42,
-    stratify=y       
-)
-
-print(f"Train Size: {X_train.shape}")
-print(f"Test Size: {X_test.shape}")
-
-# Convert dataframes in NumPy array to avoid LIME warnings
-X_train_np = X_train.values
+# Convert dataframes in NumPy array to avoid compatability issues
 X_test_np = X_test.values
-y_train_np = y_train.values
 y_test_np = y_test.values
 
-# Train Baseline
-rf = sklearn.ensemble.RandomForestClassifier(
-    n_estimators=0,
-    warm_start=True,
-    random_state=42
-)
-
-step = 1
-tot = 100
-
-for i in tqdm(range(step, tot + 1, step), desc="Training Random Forest..."):
-    rf.n_estimators = i
-    rf.fit(X_train_np, y_train_np)
-
-print(f"Model Accuracy: {sklearn.metrics.accuracy_score(y_test_np, rf.predict(X_test_np))}")
+def predict_proba_fn(x):
+    df_x = pd.DataFrame(x, columns=feature_names)
+    return rf.predict_proba(df_x)
 
 # Create the Explainer
 explainer = lime.lime_tabular.LimeTabularExplainer(
-    X_train_np, 
-    feature_names=X_train.columns.tolist(), 
+    X_test_np, 
+    feature_names=feature_names, 
     class_names=['No Default', 'Default'], 
     categorical_features=categorical_features,
     categorical_names=categorical_names,
@@ -94,13 +58,13 @@ explainer = lime.lime_tabular.LimeTabularExplainer(
 )
 
 # Explaining a non Default instances
-prd = rf.predict(X_test_np)
+prd = rf.predict(X_test)
 prd_def = np.where(prd == 0)[0]
 i = prd_def[0]
 
 exp = explainer.explain_instance(
     X_test_np[i],
-    rf.predict_proba,  
+    predict_proba_fn,  
     top_labels=1
 )
 
@@ -115,7 +79,7 @@ i = prd_ndef[0]
 
 exp = explainer.explain_instance(
     X_test_np[i],
-    rf.predict_proba,  
+    predict_proba_fn,  
     top_labels=1
 )
 

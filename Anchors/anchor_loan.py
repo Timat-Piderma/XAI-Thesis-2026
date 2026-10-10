@@ -1,101 +1,53 @@
 from pathlib import Path
 import numpy as np
-import pandas as pd
-import sklearn
-import sklearn.ensemble
 from sklearn.metrics import accuracy_score
-from anchor import utils
 from anchor import anchor_tabular
-from tqdm import tqdm
+import joblib
 
 np.random.seed(42)
 
-# Loading Dataset
+# Loading Model-Dataset Bundle
 script_folder = Path(__file__).parent
-dataset_path = script_folder.parent / 'data' / 'Loan_default.csv'
-print("Loading dataset...")
-df = pd.read_csv(dataset_path)
+bundle_path = script_folder.parent / 'models' / 'loan_rf.joblib'
 
-# Defining target column
-TARGET_COL = 'Default'
+print(f"Loading bundle from {bundle_path}...")
+bundle = joblib.load(bundle_path)
 
-# Pre-Processing
-# Removing rows with missing values
-df = df.dropna()
-
-# We must remove 'LoanID' (or any unique identifier) to avoid MemoryError.
-COLS_TO_DROP = [TARGET_COL, 'LoanID']
-
-print("Applying Label Encoding...")
-X = df.drop(columns=COLS_TO_DROP)
-y = df[TARGET_COL]
-
-categorical_columns = [
-    'Education', 'EmploymentType', 'MaritalStatus', 'LoanPurpose', 
-    'HasMortgage', 'HasDependents', 'HasCoSigner'
-]
-
-encoder = sklearn.preprocessing.OrdinalEncoder()
-
-categorical_indices = [X.columns.get_loc(col) for col in categorical_columns]
-categorical_names_dict = {}
-
-for col in categorical_columns:
-    idx = X.columns.get_loc(col)
-    # Get the unique values of the column
-    categorical_names_dict[idx] = X[col].unique().astype(str).tolist()
-
-# Apply Encoding
-X_encoded = X.copy()
-X_encoded[categorical_columns] = encoder.fit_transform(X[categorical_columns])
-
-# Convert data into numpy array
-X_array = X_encoded.values
-feature_names = X.columns.tolist()
-
-# Train Test split
-X_train, X_test, y_train, y_test = sklearn.model_selection.train_test_split(
-    X_array, y, 
-    test_size=0.2, 
-    random_state=42,
-    stratify=y       
-)
-
-print(f"Train Size: {X_train.shape}")
-print(f"Test Size: {X_test.shape}")
-
-# Train Baseline
-rf = sklearn.ensemble.RandomForestClassifier(
-    n_estimators=0,
-    warm_start=True,
-    random_state=42
-)
-
-step = 1
-tot = 100
-
-for i in tqdm(range(step, tot + 1, step), desc="Training Random Forest..."):
-    rf.n_estimators = i
-    rf.fit(X_train, y_train)
-
-print(f"Model Accuracy: {accuracy_score(y_test, rf.predict(X_test))}")
+rf = bundle['model']
+X_test = bundle['X_test']
+feature_names = bundle['feature_names']
+categorical_names = bundle['categorical_names']
+categorical_cols = bundle['categorical_cols']
 
 predict_fn = lambda x: rf.predict(x)
+
+categorical_names_dict = {}
+
+for i, col_name in enumerate(categorical_cols):
+    col_idx = X_test.columns.get_loc(col_name)
+    categorical_names_dict[col_idx] = categorical_names[i]
+
+# Convert dataframes in NumPy array to avoid compatability issues
+X_test_np = X_test.values
 
 # Create Explainer
 explainer = anchor_tabular.AnchorTabularExplainer(
     class_names= ['No Default', 'Default'],
     feature_names= feature_names,
-    train_data= X_train,
+    train_data= X_test_np,
     categorical_names= categorical_names_dict
 )
 
-idx = np.random.randint(0, X_test.shape[0])
+idx = np.random.randint(0, X_test_np.shape[0])
 
-# Generate Explanation
-print('Prediction: ', explainer.class_names[predict_fn(X_test[idx].reshape(1, -1))[0]])
-exp = explainer.explain_instance(X_test[idx], predict_fn, threshold=0.95)
+# Generate explanation
+exp = explainer.explain_instance(X_test_np[idx], predict_fn, threshold=0.95)
 
-print('Anchor: %s' % (' AND '.join(exp.names())))
-print('Precision: %.2f' % exp.precision())
-print('Coverage: %.2f' % exp.coverage())
+# Save output
+with open(script_folder / "output.txt", "w", encoding="utf-8") as f:
+    print('Prediction: ', explainer.class_names[predict_fn(X_test_np[idx].reshape(1, -1))[0]], file=f)
+    print('Anchor: %s' % (' AND '.join(exp.names())), file=f)
+    print('Precision: %.2f' % exp.precision(), file=f)
+    print('Coverage: %.2f' % exp.coverage(), file=f)
+
+print("Output saved in " / script_folder / "output.txt")
