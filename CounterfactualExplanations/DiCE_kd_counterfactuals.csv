@@ -1,0 +1,5 @@
+Age,Income,LoanAmount,CreditScore,MonthsEmployed,NumCreditLines,InterestRate,LoanTerm,DTIRatio,Education,EmploymentType,MaritalStatus,HasMortgage,HasDependents,LoanPurpose,HasCoSigner,Default
+23,15181,213093,513,40,2,12.140000343322754,12,0.3100000023841858,1.0,0.0,2.0,1.0,1.0,0.0,0.0,1
+60,15405,212889,545,109,1,8.83,36,0.34,1.0,3.0,0.0,1.0,1.0,3.0,1.0,0
+40,15222,213671,456,51,1,8.2,36,0.86,0.0,0.0,2.0,1.0,0.0,4.0,0.0,0
+35,15525,213074,515,88,3,15.78,12,0.76,1.0,2.0,0.0,0.0,1.0,2.0,1.0,0

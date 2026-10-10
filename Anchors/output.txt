@@ -1,4 +1,4 @@
 Prediction:  No Default
-Anchor: LoanAmount <= 65983.00
-Precision: 0.97
-Coverage: 0.25
+Anchor: InterestRate <= 13.50
+Precision: 1.00
+Coverage: 0.50
