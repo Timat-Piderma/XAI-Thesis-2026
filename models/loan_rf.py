@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import sklearn
 from sklearn.ensemble import RandomForestClassifier
-from xgboost import XGBClassifier
 import joblib
 from tqdm import tqdm
 
