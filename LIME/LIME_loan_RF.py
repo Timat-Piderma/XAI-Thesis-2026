@@ -24,7 +24,7 @@ rf = bundle['model']
 X_test = bundle['X_test']
 y_test = bundle['y_test']
 feature_names = bundle['feature_names'].tolist()
-categorical_names_bundle = bundle['categorical_names']
+categorical_names = bundle['categorical_names']
 categorical_cols = bundle['categorical_cols']
 
 print("Applying Label Encoding for LIME...")
@@ -36,7 +36,7 @@ categorical_names = {}
 for i, col_name in enumerate(categorical_cols):
     col_idx = X_test.columns.get_loc(col_name)
     categorical_features.append(col_idx)
-    categorical_names[col_idx] = categorical_names_bundle[i]
+    categorical_names[col_idx] = categorical_names[i]
 
 # Convert dataframes in NumPy array to avoid compatability issues
 X_test_np = X_test.values
