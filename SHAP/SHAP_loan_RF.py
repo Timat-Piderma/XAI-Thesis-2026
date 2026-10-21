@@ -1,11 +1,7 @@
-import pandas as pd
 from pathlib import Path
 import shap
 import matplotlib.pyplot as plt
 import numpy as np
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score
 import joblib
 
 np.random.seed(42)
