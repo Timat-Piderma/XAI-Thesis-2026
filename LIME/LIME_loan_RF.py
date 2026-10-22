@@ -6,11 +6,6 @@ import lime
 import lime.lime_tabular
 import joblib
 
-### AGGIUNTO: Ignora i warning di scikit-learn sui nomi delle feature mancanti in LIME ###
-import warnings
-warnings.filterwarnings("ignore", message="X does not have valid feature names")
-##########################################################################################
-
 np.random.seed(42)
 
 # Loading Model-Dataset Bundle
