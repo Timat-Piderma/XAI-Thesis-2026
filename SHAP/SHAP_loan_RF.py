@@ -26,67 +26,120 @@ for i, col_name in enumerate(categorical_cols):
     c = X_test.columns.get_loc(col_name)
     category_names[c] = categorical_names[i]
 
-# Convert dataframes in NumPy array to avoid compatability issues
-X_test_np = X_test.values
-y_test_np = y_test.values
-
-# Shap Global Explanation
+# Create the Explainer
 print("\nInitializing SHAP TreeExplainer...")
-
 explainer = shap.TreeExplainer(rf)
 
 # For performance reasons during development, we calculate SHAP values on a sample of the test set.
 X_test_sample = X_test.sample(n=500, random_state=42)
 
 print("Calculating SHAP values...")
-shap_values = explainer.shap_values(X_test_sample)
+shap_values = explainer(X_test_sample)
+shap_values_scatter = explainer(X_test[:500])[:, :, 1]
 
-# We select index 1, which represents the probability of the 'Default' class.
-shap_values_for_default = shap_values[:, :, 1]
+###################
+### Local Plots ###
+###################
 
-# Generate the Summary Plot
-print("Generating SHAP Summary Plot...")
-# The summary plot combines feature importance with feature effects.
-# Each dot is a single prediction from the test sample.
-shap.summary_plot(
-    shap_values_for_default, 
-    X_test_sample, 
-    show=False # Set to False so we can customize or save the plot before showing it
-)
+local_instance = shap_values[0, :, 1]
 
-# Save and display
-output_path = script_folder / 'rf_output/shap_rf_global_waterfall.png'
-plt.tight_layout()
-plt.savefig(output_path, dpi=300, bbox_inches='tight')
+# Generate the Bar Plot
+print("Generating Bar plot...")
+
+shap.plots.bar(local_instance, show=False)
+plt.title("SHAP Local Bar Plot")
+
+output_path = script_folder / 'rf_output/shap_rf_bar.png'
+plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5)
 print(f"Plot saved as '{output_path}'")
 
-print("\nFinding the customer with the highest probability of default...")
-
-# Predict probabilities for the entire test set
-probabilities = rf.predict_proba(X_test)
-
-# Extract probabilities for Class 1 (Default)
-default_probs = probabilities[:, 1]
-
-# Find the index of the instance with the highest default probability
-worst_customer_idx = np.argmax(default_probs)
-max_prob = default_probs[worst_customer_idx]
-
-# Get the specific row
-instance = X_test.iloc[[worst_customer_idx]]
-
-print("Generating Local Explanation object...")
-
-local_explanation = explainer(instance)
-local_exp_class1 = local_explanation[0, :, 1]
+plt.close()
 
 # Generate the Waterfall Plot
-print("Rendering Waterfall plot...")
-plt.figure(figsize=(10, 6))
-shap.plots.waterfall(local_exp_class1, show=False)
+print("Generating Waterfall plot...")
 
-# Save and display
-output_path = script_folder / 'rf_output/shap_rf_local_waterfall.png'
-plt.tight_layout()
-plt.savefig(output_path, dpi=300, bbox_inches='tight')
+shap.plots.waterfall(local_instance, show=False)
+plt.title("SHAP Waterfall Plot")
+
+output_path = script_folder / 'rf_output/shap_rf_waterfall.png'
+plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5)
 print(f"Plot saved as '{output_path}'")
+
+plt.close()
+
+# Generate the Force Plot
+print("Generating Local Force plot...")
+
+shap.plots.force(local_instance, matplotlib=True, show=False)
+plt.title("SHAP Local Force Plot")
+
+output_path = script_folder / 'rf_output/shap_rf_force.png'
+plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5)
+print(f"Plot saved as '{output_path}'")
+
+plt.close()
+
+####################
+### Global Plots ###
+####################
+
+global_instances = shap_values[:, :, 1]
+
+# Generate the Beeswarm Plot
+print("Generating Beeswarm plot...")
+
+shap.plots.beeswarm(global_instances, show=False)
+plt.title("SHAP Beeswarm Plot")
+
+output_path = script_folder / 'rf_output/shap_rf_beeswarm.png'
+plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5)
+print(f"Plot saved as '{output_path}'")
+
+plt.close()
+
+# Generate the Force Plot
+print("Generating Global Force plot...")
+
+force_plot_html = shap.plots.force(global_instances, show=False)
+
+output_path = script_folder / 'rf_output/shap_rf_gforce.html'
+shap.save_html(str(output_path), force_plot_html)
+print(f"Plot saved as '{output_path}'")
+
+# Generate the Global Bar (Importance) Plot
+print("Generating Global Bar plot...")
+
+shap.plots.bar(global_instances, show=False)
+plt.title("SHAP Global Bar Plot")
+
+output_path = script_folder / 'rf_output/shap_rf_gbar.png'
+plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5)
+print(f"Plot saved as '{output_path}'")
+
+plt.close()
+
+# Generate the Global Dependence Scatter Plot
+print("Generating Global Dependence Scatter plot...")
+
+shap.plots.scatter(shap_values_scatter[:, "Age"], show=False)
+plt.title("SHAP Dependence Scatter Plot")
+
+output_path = script_folder / 'rf_output/shap_rf_dependence.png'
+plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5)
+print(f"Plot saved as '{output_path}'")
+
+plt.close()
+
+# Generate the Decision Plot
+print("Generating Decision plot...")
+
+expected_value_class1 = explainer.expected_value[1]
+shap_values_array = shap_values.values[:, :, 1]
+shap.decision_plot(expected_value_class1, shap_values_array, X_test_sample, show=False)
+plt.title("SHAP Decision Plot")
+
+output_path = script_folder / 'rf_output/shap_rf_decision.png'
+plt.savefig(output_path, dpi=300, bbox_inches='tight', pad_inches=0.5)
+print(f"Plot saved as '{output_path}'")
+
+plt.close()
