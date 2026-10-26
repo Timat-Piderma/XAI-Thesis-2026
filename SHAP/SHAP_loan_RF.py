@@ -27,8 +27,8 @@ for i, col_name in enumerate(categorical_cols):
     category_names[c] = categorical_names[i]
 
 # Create the Explainer
-print("\nInitializing SHAP TreeExplainer...")
-explainer = shap.TreeExplainer(rf)
+print("\nInitializing SHAP Explainer...")
+explainer = shap.PermutationExplainer(rf.predict_proba, X_test)
 
 # For performance reasons during development, we calculate SHAP values on a sample of the test set.
 X_test_sample = X_test.sample(n=500, random_state=42)
@@ -133,7 +133,7 @@ plt.close()
 # Generate the Decision Plot
 print("Generating Decision plot...")
 
-expected_value_class1 = explainer.expected_value[1]
+expected_value_class1 = 1
 shap_values_array = shap_values.values[:, :, 1]
 shap.decision_plot(expected_value_class1, shap_values_array, X_test_sample, show=False)
 plt.title("SHAP Decision Plot")
