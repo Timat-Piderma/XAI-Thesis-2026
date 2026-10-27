@@ -134,7 +134,6 @@ print("Generating Decision plot...")
 
 expected_value_class1 = 1
 shap_values_array = shap_values.values[:, :, 1]
-shap.decision_plot(expected_value_class1, shap_values_array, X_test_sample, show=False)
 plt.title("SHAP Decision Plot")
 
 output_path = script_folder / 'rf_output/shap_rf_decision.png'
