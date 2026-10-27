@@ -1,4 +1,4 @@
 Prediction:  No Default
-Anchor: InterestRate <= 13.50
-Precision: 1.00
-Coverage: 0.50
+Anchor: Age > 56.00
+Precision: 0.98
+Coverage: 0.25
