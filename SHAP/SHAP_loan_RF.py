@@ -35,7 +35,6 @@ X_test_sample = X_test.sample(n=500, random_state=42)
 
 print("Calculating SHAP values...")
 shap_values = explainer(X_test_sample)
-shap_values_scatter = explainer(X_test[:500])[:, :, 1]
 
 ###################
 ### Local Plots ###
@@ -121,7 +120,7 @@ plt.close()
 # Generate the Global Dependence Scatter Plot
 print("Generating Global Dependence Scatter plot...")
 
-shap.plots.scatter(shap_values_scatter[:, "Age"], show=False)
+shap.plots.scatter(global_instances[:, "Age"], show=False)
 plt.title("SHAP Dependence Scatter Plot")
 
 output_path = script_folder / 'rf_output/shap_rf_dependence.png'
