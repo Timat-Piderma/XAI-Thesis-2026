@@ -14,7 +14,7 @@ print(f"Loading bundle from {bundle_path}...")
 bundle = joblib.load(bundle_path)
 
 rf = bundle['model']
-X_test = bundle['X_test']
+X_train = bundle['X_train']
 feature_names = bundle['feature_names']
 categorical_names = bundle['categorical_names']
 categorical_cols = bundle['categorical_cols']
@@ -24,11 +24,11 @@ predict_fn = lambda x: rf.predict(x)
 categorical_names_dict = {}
 
 for i, col_name in enumerate(categorical_cols):
-    col_idx = X_test.columns.get_loc(col_name)
+    col_idx = X_train.columns.get_loc(col_name)
     categorical_names_dict[col_idx] = categorical_names[i]
 
 # Convert dataframes in NumPy array to avoid compatability issues
-X_test_np = X_test.values
+X_test_np = X_train.values
 
 # Create Explainer
 explainer = anchor_tabular.AnchorTabularExplainer(
